@@ -1,0 +1,391 @@
+/* ========================================
+   Mauritanian Students' Union in Algeria
+   Responsive Styles - responsive.css
+   Mobile-First (min-width breakpoints)
+   ======================================== */
+
+/* ========================================
+   Base: Mobile (no media query)
+   Default styles applied to all screens
+   ======================================== */
+
+/* Header: hide desktop nav, show hamburger */
+.header__nav {
+    display: none;
+}
+
+.header__menu-btn {
+    display: flex;
+}
+
+/* Grids: single column on mobile */
+.grid-2,
+.grid-3,
+.grid-4 {
+    grid-template-columns: 1fr;
+}
+
+/* Quick cards: 2 columns on mobile */
+.quick-cards__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+}
+
+/* Hero: smaller title on mobile */
+.hero__title {
+    font-size: 1.75rem;
+}
+
+.hero__subtitle {
+    font-size: var(--font-size-base);
+}
+
+/* Footer: single column on mobile */
+.footer__grid {
+    grid-template-columns: 1fr;
+}
+
+/* About: single column */
+.about-section__grid {
+    grid-template-columns: 1fr;
+}
+
+/* News: single column */
+.news-cards__grid {
+    grid-template-columns: 1fr;
+}
+
+/* Section: reduced padding on mobile */
+.section {
+    padding-block: var(--space-3xl);
+}
+
+/* Section title: smaller on mobile */
+.section-title {
+    font-size: var(--font-size-2xl);
+}
+
+/* Page header: smaller on mobile */
+.page-header__title {
+    font-size: var(--font-size-2xl);
+}
+
+/* CTA: smaller title */
+.cta__title {
+    font-size: var(--font-size-2xl);
+}
+
+/* Container: tighter padding on mobile */
+.container {
+    padding-inline: var(--space-md);
+}
+
+/* Button groups stack vertically on mobile */
+.cta__buttons {
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Gallery: smaller minimum */
+.gallery__grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+/* Body menu-open prevents scroll */
+body.menu-open {
+    overflow: hidden;
+}
+
+
+/* ========================================
+   @media (min-width: 576px) - Small
+   ======================================== */
+@media (min-width: 576px) {
+    /* Quick cards: 2 columns, slightly larger gap */
+    .quick-cards__grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-lg);
+    }
+
+    /* Container: a bit more breathing room */
+    .container {
+        padding-inline: var(--space-lg);
+    }
+
+    /* Gallery: larger minimum */
+    .gallery__grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+
+    /* Hero title bump */
+    .hero__title {
+        font-size: var(--font-size-3xl);
+    }
+
+    /* CTA buttons horizontal */
+    .cta__buttons {
+        flex-direction: row;
+    }
+}
+
+
+/* ========================================
+   @media (min-width: 768px) - Tablet
+   ======================================== */
+@media (min-width: 768px) {
+    /* Header: show desktop nav, hide hamburger */
+    .header__nav {
+        display: flex;
+    }
+
+    .header__menu-btn {
+        display: none;
+    }
+
+    /* Grid: 2 columns */
+    .grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Grid-3: 2 columns on tablet */
+    .grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Quick cards: 2 columns */
+    .quick-cards__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* About: 2 columns */
+    .about-section__grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    /* Footer: 2 columns */
+    .footer__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* News: 2 columns */
+    .news-cards__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Hero title */
+    .hero__title {
+        font-size: var(--font-size-4xl);
+    }
+
+    .hero__subtitle {
+        font-size: var(--font-size-lg);
+    }
+
+    /* Container padding */
+    .container {
+        padding-inline: var(--space-xl);
+    }
+
+    /* Section title */
+    .section-title {
+        font-size: var(--font-size-3xl);
+    }
+
+    /* Page header */
+    .page-header__title {
+        font-size: var(--font-size-3xl);
+    }
+
+    /* CTA */
+    .cta__title {
+        font-size: var(--font-size-3xl);
+    }
+
+    /* Gallery */
+    .gallery__grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+
+    /* Section padding */
+    .section {
+        padding-block: var(--space-4xl);
+    }
+}
+
+
+/* ========================================
+   @media (min-width: 1024px) - Desktop
+   ======================================== */
+@media (min-width: 1024px) {
+    /* Grid-3: 3 columns */
+    .grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* Grid-4: 4 columns */
+    .grid-4 {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    /* Quick cards: 3 columns (6 cards = 3×2) */
+    .quick-cards__grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* News: 3 columns */
+    .news-cards__grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* Footer: 3 columns */
+    .footer__grid {
+        grid-template-columns: 1.5fr 1fr 1fr;
+    }
+
+    /* Section: full padding */
+    .section {
+        padding-block: var(--space-5xl);
+    }
+
+    /* Hero title: full size */
+    .hero__title {
+        font-size: var(--font-size-5xl);
+    }
+
+    .hero__subtitle {
+        font-size: var(--font-size-xl);
+    }
+
+    /* Section title: full size */
+    .section-title {
+        font-size: var(--font-size-4xl);
+    }
+
+    /* Page header */
+    .page-header__title {
+        font-size: var(--font-size-4xl);
+    }
+
+    /* CTA */
+    .cta__title {
+        font-size: var(--font-size-4xl);
+    }
+
+    /* About section gap */
+    .about-section__grid {
+        gap: var(--space-5xl);
+    }
+}
+
+
+/* ========================================
+   @media (min-width: 1280px) - Large Desktop
+   ======================================== */
+@media (min-width: 1280px) {
+    /* Container: max width padding */
+    .container {
+        padding-inline: var(--space-xl);
+    }
+
+    /* Hero content: larger */
+    .hero__content {
+        max-width: 1280px;
+    }
+
+    .hero__title {
+        font-size: 3.5rem;
+    }
+
+    /* Footer: more spacious grid */
+    .footer__grid {
+        gap: var(--space-4xl);
+    }
+
+    /* Quick cards: more gap */
+    .quick-cards__grid {
+        gap: var(--space-xl);
+    }
+}
+
+
+/* ========================================
+   Print Styles
+   ======================================== */
+@media print {
+    /* Hide interactive elements */
+    .header,
+    .footer,
+    .header__nav,
+    .header__menu-btn,
+    .mobile-nav,
+    .mobile-nav__overlay,
+    .back-to-top,
+    .btn,
+    .hero__dots,
+    .hero__overlay,
+    .cta,
+    .cta__buttons,
+    .news-filter,
+    .modal,
+    .toast,
+    .gallery__overlay {
+        display: none !important;
+    }
+
+    /* Reset body */
+    body {
+        color: #000;
+        background: #fff;
+        font-size: 12pt;
+    }
+
+    /* Reset main margin for fixed header */
+    main {
+        margin-top: 0 !important;
+    }
+
+    /* Sections: minimal padding */
+    .section {
+        padding-block: 20px;
+        break-inside: avoid;
+    }
+
+    /* Links */
+    a {
+        color: #000;
+        text-decoration: underline;
+    }
+
+    /* Images */
+    img {
+        max-width: 100%;
+        break-inside: avoid;
+    }
+}
+
+
+/* ========================================
+   Reduced Motion
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    .hero__slide {
+        transition: none;
+    }
+
+    .fade-in {
+        opacity: 1;
+        transform: none;
+    }
+}

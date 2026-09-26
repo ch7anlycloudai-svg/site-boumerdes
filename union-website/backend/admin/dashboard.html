@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - اتحاد الطلبة الموريتانيين</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>لوحة التحكم</h2>
+            <p>اتحاد الطلبة</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item active">
+                <span class="nav-icon">📊</span>
+                <span>الرئيسية</span>
+            </a>
+            <a href="news.html" class="nav-item">
+                <span class="nav-icon">📰</span>
+                <span>الأخبار</span>
+            </a>
+            <a href="messages.html" class="nav-item">
+                <span class="nav-icon">✉️</span>
+                <span>الرسائل</span>
+                <span id="unreadBadge" class="badge" style="display: none;">0</span>
+            </a>
+            <a href="pages.html" class="nav-item">
+                <span class="nav-icon">📄</span>
+                <span>محتوى الصفحات</span>
+            </a>
+            <a href="media.html" class="nav-item">
+                <span class="nav-icon">🖼️</span>
+                <span>الوسائط</span>
+            </a>
+            <a href="universities.html" class="nav-item">
+                <span class="nav-icon">🏛️</span>
+                <span>الجامعات</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span>الإعدادات</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="/" class="nav-item">
+                <span class="nav-icon">🌐</span>
+                <span>الموقع الرئيسي</span>
+            </a>
+            <button onclick="logout()" class="nav-item logout-btn">
+                <span class="nav-icon">🚪</span>
+                <span>تسجيل الخروج</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="content-header">
+            <h1>مرحباً بك في لوحة التحكم</h1>
+            <p>إدارة موقع اتحاد الطلبة الموريتانيين بالجزائر</p>
+        </header>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📰</div>
+                <div class="stat-info">
+                    <h3 id="newsCount">0</h3>
+                    <p>الأخبار</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">✉️</div>
+                <div class="stat-info">
+                    <h3 id="messagesCount">0</h3>
+                    <p>الرسائل</p>
+                </div>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-icon">📄</div>
+                <div class="stat-info">
+                    <h3>7</h3>
+                    <p>صفحات</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <section class="dashboard-section">
+            <h2>إجراءات سريعة</h2>
+            <div class="quick-actions">
+                <a href="news.html?action=new" class="action-card">
+                    <span class="action-icon">➕</span>
+                    <span>إضافة خبر جديد</span>
+                </a>
+                <a href="messages.html" class="action-card">
+                    <span class="action-icon">📬</span>
+                    <span>عرض الرسائل</span>
+                </a>
+                <a href="pages.html" class="action-card">
+                    <span class="action-icon">✏️</span>
+                    <span>تعديل المحتوى</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Recent Activity -->
+        <div class="dashboard-grid">
+            <!-- Recent News -->
+            <section class="dashboard-section">
+                <h2>آخر الأخبار</h2>
+                <div id="recentNews" class="recent-list">
+                    <p class="loading">جاري التحميل...</p>
+                </div>
+            </section>
+
+            <!-- Recent Messages -->
+            <section class="dashboard-section">
+                <h2>آخر الرسائل</h2>
+                <div id="recentMessages" class="recent-list">
+                    <p class="loading">جاري التحميل...</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- Change Password Section -->
+        <section class="dashboard-section">
+            <h2>تغيير كلمة المرور</h2>
+            <form id="changePasswordForm" class="password-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="currentPassword">كلمة المرور الحالية</label>
+                        <input type="password" id="currentPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">كلمة المرور الجديدة</label>
+                        <input type="password" id="newPassword" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">تأكيد كلمة المرور</label>
+                        <input type="password" id="confirmPassword" required minlength="6">
+                    </div>
+                </div>
+                <div id="passwordError" class="error-message" style="display: none;"></div>
+                <div id="passwordSuccess" class="success-message" style="display: none;"></div>
+                <button type="submit" class="btn btn-primary">تغيير كلمة المرور</button>
+            </form>
+        </section>
+    </main>
+
+    <script src="js/admin.js"></script>
+    <script>
+        // Require authentication
+        requireAuth();
+
+        // Load dashboard data
+        async function loadDashboard() {
+            try {
+                // Load stats
+                const [newsRes, messagesRes] = await Promise.all([
+                    fetch('/api/news/all', { credentials: 'include' }),
+                    fetch('/api/messages', { credentials: 'include' })
+                ]);
+
+                const newsData = await newsRes.json();
+                const messagesData = await messagesRes.json();
+
+                // Update stats
+                if (newsData.success) {
+                    document.getElementById('newsCount').textContent = newsData.data.length;
+                }
+                if (messagesData.success) {
+                    document.getElementById('messagesCount').textContent = messagesData.data.length;
+                    const unread = messagesData.data.filter(m => !m.is_read).length;
+                    if (unread > 0) {
+                        document.getElementById('unreadBadge').textContent = unread;
+                        document.getElementById('unreadBadge').style.display = 'inline';
+                    }
+                }
+
+                // Load recent news
+                const recentNewsDiv = document.getElementById('recentNews');
+                if (newsData.success && newsData.data.length > 0) {
+                    const recentNews = newsData.data.slice(0, 5);
+                    recentNewsDiv.innerHTML = recentNews.map(news => `
+                        <div class="recent-item">
+                            <span class="recent-title">${news.title_ar}</span>
+                            <span class="recent-date">${formatDate(news.created_at)}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    recentNewsDiv.innerHTML = '<p class="empty">لا توجد أخبار</p>';
+                }
+
+                // Load recent messages
+                const recentMessagesDiv = document.getElementById('recentMessages');
+                if (messagesData.success && messagesData.data.length > 0) {
+                    const recentMessages = messagesData.data.slice(0, 5);
+                    recentMessagesDiv.innerHTML = recentMessages.map(msg => `
+                        <div class="recent-item ${!msg.is_read ? 'unread' : ''}">
+                            <span class="recent-title">${msg.name} - ${msg.subject}</span>
+                            <span class="recent-date">${formatDate(msg.created_at)}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    recentMessagesDiv.innerHTML = '<p class="empty">لا توجد رسائل</p>';
+                }
+
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        // Handle password change
+        document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('passwordError');
+            const successDiv = document.getElementById('passwordSuccess');
+
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            if (newPassword !== confirmPassword) {
+                errorDiv.textContent = 'كلمة المرور الجديدة غير متطابقة';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auth/change-password', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    successDiv.textContent = 'تم تغيير كلمة المرور بنجاح';
+                    successDiv.style.display = 'block';
+                    e.target.reset();
+                } else {
+                    errorDiv.textContent = data.message;
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                errorDiv.textContent = 'حدث خطأ في الاتصال';
+                errorDiv.style.display = 'block';
+            }
+        });
+
+        // Load dashboard on page load
+        loadDashboard();
+    </script>
+</body>
+</html>

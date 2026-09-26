@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الرسائل - لوحة التحكم</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>لوحة التحكم</h2>
+            <p>اتحاد الطلبة</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span>الرئيسية</span>
+            </a>
+            <a href="news.html" class="nav-item">
+                <span class="nav-icon">📰</span>
+                <span>الأخبار</span>
+            </a>
+            <a href="messages.html" class="nav-item active">
+                <span class="nav-icon">✉️</span>
+                <span>الرسائل</span>
+            </a>
+            <a href="pages.html" class="nav-item">
+                <span class="nav-icon">📄</span>
+                <span>محتوى الصفحات</span>
+            </a>
+            <a href="media.html" class="nav-item">
+                <span class="nav-icon">🖼️</span>
+                <span>الوسائط</span>
+            </a>
+            <a href="universities.html" class="nav-item">
+                <span class="nav-icon">🏛️</span>
+                <span>الجامعات</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span>الإعدادات</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="/" class="nav-item">
+                <span class="nav-icon">🌐</span>
+                <span>الموقع الرئيسي</span>
+            </a>
+            <button onclick="logout()" class="nav-item logout-btn">
+                <span class="nav-icon">🚪</span>
+                <span>تسجيل الخروج</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="content-header">
+            <div class="header-title">
+                <h1>رسائل التواصل</h1>
+                <p>عرض وإدارة الرسائل الواردة من نموذج التواصل</p>
+            </div>
+            <div class="header-stats">
+                <span id="unreadCount" class="stat-badge">0 غير مقروءة</span>
+            </div>
+        </header>
+
+        <!-- Messages List -->
+        <div class="messages-container">
+            <div id="messagesList" class="messages-list">
+                <p class="loading">جاري التحميل...</p>
+            </div>
+
+            <div id="messageDetail" class="message-detail" style="display: none;">
+                <div class="message-detail-header">
+                    <button onclick="closeMessageDetail()" class="btn-back">← العودة للقائمة</button>
+                </div>
+                <div id="messageContent" class="message-content">
+                    <!-- Message content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal" style="display: none;">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2>تأكيد الحذف</h2>
+                <button onclick="closeDeleteModal()" class="close-btn">&times;</button>
+            </div>
+            <p>هل أنت متأكد من حذف هذه الرسالة؟</p>
+            <p class="warning-text">لا يمكن التراجع عن هذا الإجراء!</p>
+            <div class="modal-actions">
+                <button onclick="closeDeleteModal()" class="btn btn-secondary">إلغاء</button>
+                <button onclick="confirmDelete()" class="btn btn-danger">حذف</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+    <script>
+        // Require authentication
+        requireAuth();
+
+        let messageToDelete = null;
+        let allMessages = [];
+
+        // Load messages on page load
+        loadMessages();
+
+        async function loadMessages() {
+            try {
+                const response = await fetch('/api/messages', { credentials: 'include' });
+                const data = await response.json();
+
+                const listDiv = document.getElementById('messagesList');
+
+                if (data.success) {
+                    allMessages = data.data;
+                    const unreadCount = allMessages.filter(m => !m.is_read).length;
+                    document.getElementById('unreadCount').textContent = `${unreadCount} غير مقروءة`;
+
+                    if (allMessages.length > 0) {
+                        listDiv.innerHTML = allMessages.map(msg => `
+                            <div class="message-item ${!msg.is_read ? 'unread' : ''}" onclick="viewMessage(${msg.id})">
+                                <div class="message-header">
+                                    <span class="message-sender">${escapeHtml(msg.name)}</span>
+                                    <span class="message-date">${formatDate(msg.created_at)}</span>
+                                </div>
+                                <div class="message-subject">${escapeHtml(msg.subject)}</div>
+                                <div class="message-preview">${escapeHtml(msg.message.substring(0, 100))}...</div>
+                                <div class="message-actions" onclick="event.stopPropagation()">
+                                    <button onclick="toggleRead(${msg.id}, ${msg.is_read})" class="btn-icon" title="${msg.is_read ? 'تعليم كغير مقروء' : 'تعليم كمقروء'}">
+                                        ${msg.is_read ? '📬' : '📭'}
+                                    </button>
+                                    <button onclick="deleteMessage(${msg.id})" class="btn-icon danger" title="حذف">🗑️</button>
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        listDiv.innerHTML = '<p class="empty">لا توجد رسائل</p>';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                document.getElementById('messagesList').innerHTML =
+                    '<p class="error">حدث خطأ في تحميل الرسائل</p>';
+            }
+        }
+
+        async function viewMessage(id) {
+            try {
+                const response = await fetch(`/api/messages/${id}`, { credentials: 'include' });
+                const data = await response.json();
+
+                if (data.success) {
+                    const msg = data.data;
+
+                    // Mark as read
+                    if (!msg.is_read) {
+                        await fetch(`/api/messages/${id}/read`, {
+                            method: 'PATCH',
+                            credentials: 'include'
+                        });
+                    }
+
+                    // Show message detail
+                    document.getElementById('messagesList').style.display = 'none';
+                    document.getElementById('messageDetail').style.display = 'block';
+
+                    document.getElementById('messageContent').innerHTML = `
+                        <div class="detail-header">
+                            <h2>${escapeHtml(msg.subject)}</h2>
+                            <span class="detail-date">${formatDate(msg.created_at)}</span>
+                        </div>
+
+                        <div class="detail-info">
+                            <div class="info-row">
+                                <span class="info-label">الاسم:</span>
+                                <span class="info-value">${escapeHtml(msg.name)}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">البريد الإلكتروني:</span>
+                                <span class="info-value">
+                                    <a href="mailto:${escapeHtml(msg.email)}">${escapeHtml(msg.email)}</a>
+                                </span>
+                            </div>
+                            ${msg.phone ? `
+                            <div class="info-row">
+                                <span class="info-label">الهاتف:</span>
+                                <span class="info-value">
+                                    <a href="tel:${escapeHtml(msg.phone)}">${escapeHtml(msg.phone)}</a>
+                                </span>
+                            </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="detail-body">
+                            <h3>الرسالة:</h3>
+                            <p>${escapeHtml(msg.message).replace(/\n/g, '<br>')}</p>
+                        </div>
+
+                        <div class="detail-actions">
+                            <a href="mailto:${escapeHtml(msg.email)}?subject=Re: ${encodeURIComponent(msg.subject)}" class="btn btn-primary">
+                                الرد عبر البريد
+                            </a>
+                            <button onclick="deleteMessage(${msg.id})" class="btn btn-danger">حذف الرسالة</button>
+                        </div>
+                    `;
+
+                    // Reload list to update read status
+                    loadMessages();
+                }
+            } catch (error) {
+                console.error('Error viewing message:', error);
+            }
+        }
+
+        function closeMessageDetail() {
+            document.getElementById('messageDetail').style.display = 'none';
+            document.getElementById('messagesList').style.display = 'block';
+        }
+
+        async function toggleRead(id, isRead) {
+            try {
+                const endpoint = isRead ? 'unread' : 'read';
+                await fetch(`/api/messages/${id}/${endpoint}`, {
+                    method: 'PATCH',
+                    credentials: 'include'
+                });
+                loadMessages();
+            } catch (error) {
+                console.error('Error toggling read status:', error);
+            }
+        }
+
+        function deleteMessage(id) {
+            messageToDelete = id;
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            messageToDelete = null;
+        }
+
+        async function confirmDelete() {
+            if (!messageToDelete) return;
+
+            try {
+                const response = await fetch(`/api/messages/${messageToDelete}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+
+                if (response.ok) {
+                    closeDeleteModal();
+                    closeMessageDetail();
+                    loadMessages();
+                }
+            } catch (error) {
+                console.error('Error deleting message:', error);
+            }
+        }
+    </script>
+</body>
+</html>

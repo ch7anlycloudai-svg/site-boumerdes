@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الوسائط - لوحة التحكم</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+    <style>
+
+
+        /* Media Management Styles */
+        .media-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 1rem;
+        }
+
+        .media-tab {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: none;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .media-tab:hover {
+            background: #f3f4f6;
+        }
+
+        .media-tab.active {
+            background: #006233;
+            color: white;
+        }
+
+        .media-section {
+            display: none;
+        }
+
+        .media-section.active {
+            display: block;
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .media-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .media-card__image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: #f3f4f6;
+        }
+
+        .media-card__placeholder {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #006233, #004d28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .media-card__body {
+            padding: 1rem;
+        }
+
+        .media-card__title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .media-card__subtitle {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin: 0 0 1rem 0;
+        }
+
+        .media-card__actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .media-card__status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .media-card__status--active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .media-card__status--inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f9fafb;
+            margin-bottom: 1rem;
+        }
+
+        .upload-area:hover {
+            border-color: #006233;
+            background: #f0fdf4;
+        }
+
+        .upload-area.dragover {
+            border-color: #006233;
+            background: #d1fae5;
+        }
+
+        .upload-area__icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-area__text {
+            color: #6b7280;
+        }
+
+        .upload-area input[type="file"] {
+            display: none;
+        }
+
+        .upload-preview {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        /* Modal Form */
+        .modal-form .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .modal-form label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-form input,
+        .modal-form textarea,
+        .modal-form select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .modal-form input:focus,
+        .modal-form textarea:focus,
+        .modal-form select:focus {
+            outline: none;
+            border-color: #006233;
+            box-shadow: 0 0 0 3px rgba(0, 98, 51, 0.1);
+        }
+
+        .modal-form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .items-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .items-list__item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            background: #f3f4f6;
+            border-radius: 20px;
+            font-size: 0.875rem;
+        }
+
+        .items-list__remove {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            padding: 0;
+            font-size: 1rem;
+        }
+
+        .add-item-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .add-item-group input {
+            flex: 1;
+        }
+
+        /* Video URL Input */
+        .video-input-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+
+        .video-input-group .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .video-preview {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .video-preview__badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: #fee2e2;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .video-preview__badge--youtube { background: #fee2e2; color: #dc2626; }
+        .video-preview__badge--vimeo { background: #dbeafe; color: #2563eb; }
+        .video-preview__badge--drive { background: #fef3c7; color: #d97706; }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        .empty-state__icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal__content {
+            background: white;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal__header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal__title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .modal__close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .modal__body {
+            padding: 1.5rem;
+        }
+
+        .modal__footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .media-tabs {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>لوحة التحكم</h2>
+            <p>اتحاد الطلبة</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span>الرئيسية</span>
+            </a>
+            <a href="news.html" class="nav-item">
+                <span class="nav-icon">📰</span>
+                <span>الأخبار</span>
+            </a>
+            <a href="messages.html" class="nav-item">
+                <span class="nav-icon">✉️</span>
+                <span>الرسائل</span>
+            </a>
+            <a href="pages.html" class="nav-item">
+                <span class="nav-icon">📄</span>
+                <span>محتوى الصفحات</span>
+            </a>
+            <a href="media.html" class="nav-item active">
+                <span class="nav-icon">🖼️</span>
+                <span>الوسائط</span>
+            </a>
+            <a href="universities.html" class="nav-item">
+                <span class="nav-icon">🏛️</span>
+                <span>الجامعات</span>
+            </a>
+            <a href="settings.html" class="nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span>الإعدادات</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="/" class="nav-item">
+                <span class="nav-icon">🌐</span>
+                <span>الموقع الرئيسي</span>
+            </a>
+            <button onclick="logout()" class="nav-item logout-btn">
+                <span class="nav-icon">🚪</span>
+                <span>تسجيل الخروج</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="content-header">
+            <h1>إدارة الوسائط</h1>
+            <p>إدارة صور الواجهة الرئيسية وصور التخصصات والفيديوهات</p>
+        </header>
+
+        <!-- Tabs -->
+        <div class="media-tabs">
+            <button class="media-tab active" data-tab="hero">🖼️ صور الواجهة الرئيسية</button>
+            <button class="media-tab" data-tab="specialties">📚 التخصصات</button>
+            <button class="media-tab" data-tab="gallery">🖼️ معرض الصور</button>
+        </div>
+
+        <!-- Hero Slides Section -->
+        <div class="media-section active" id="heroSection">
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0;">صور الواجهة الرئيسية</h2>
+                <button class="btn btn-primary" onclick="openHeroModal()">➕ إضافة شريحة جديدة</button>
+            </div>
+
+            <div class="media-grid" id="heroGrid">
+                <div class="empty-state" id="heroEmpty">
+                    <div class="empty-state__icon">🖼️</div>
+                    <p>لا توجد شرائح حالياً</p>
+                    <button class="btn btn-primary" onclick="openHeroModal()">إضافة شريحة</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Specialties Section -->
+        <div class="media-section" id="specialtiesSection">
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0;">التخصصات</h2>
+                <button class="btn btn-primary" onclick="openSpecialtyModal()">➕ إضافة تخصص جديد</button>
+            </div>
+
+            <div class="media-grid" id="specialtiesGrid">
+                <div class="empty-state" id="specialtiesEmpty">
+                    <div class="empty-state__icon">📚</div>
+                    <p>جاري التحميل...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gallery Section -->
+        <div class="media-section" id="gallerySection">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3>معرض الصور</h3>
+                <button class="btn btn-primary" onclick="showGalleryModal()">
+                    + إضافة صورة
+                </button>
+            </div>
+
+            <div id="galleryList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
+                <!-- loaded by JS -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Hero Slide Modal -->
+    <div class="modal" id="heroModal">
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3 class="modal__title" id="heroModalTitle">إضافة شريحة جديدة</h3>
+                <button class="modal__close" onclick="closeHeroModal()">✕</button>
+            </div>
+            <div class="modal__body">
+                <form id="heroForm" class="modal-form">
+                    <input type="hidden" id="heroId">
+
+                    <div class="form-group">
+                        <label>صورة الشريحة *</label>
+                        <div class="upload-area" id="heroUploadArea">
+                            <div class="upload-area__icon">📷</div>
+                            <p class="upload-area__text">اسحب الصورة هنا أو انقر للاختيار</p>
+                            <input type="file" id="heroImageInput" accept="image/*">
+                            <img id="heroImagePreview" class="upload-preview" style="display: none;">
+                        </div>
+                        <input type="hidden" id="heroImageUrl" required>
+                        <small style="color: #6b7280;">أو أدخل رابط الصورة مباشرة:</small>
+                        <input type="url" id="heroImageUrlInput" placeholder="https://example.com/image.jpg" style="margin-top: 0.5rem;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>العنوان</label>
+                        <input type="text" id="heroTitleAr" placeholder="عنوان الشريحة">
+                    </div>
+
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label>العنوان الفرعي</label>
+                        <textarea id="heroSubtitleAr" placeholder="وصف قصير"></textarea>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label>رابط الزر</label>
+                        <input type="url" id="heroLinkUrl" placeholder="https://...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>نص الزر</label>
+                        <input type="text" id="heroButtonTextAr" placeholder="المزيد">
+                    </div>
+
+                    <div class="form-row" style="margin-top: 1rem;">
+                        <div class="form-group">
+                            <label>الترتيب</label>
+                            <input type="number" id="heroOrder" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="heroActive" checked>
+                                مفعّل
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn-secondary" onclick="closeHeroModal()">إلغاء</button>
+                <button class="btn btn-primary" onclick="saveHeroSlide()">حفظ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Specialty Modal -->
+    <div class="modal" id="specialtyModal">
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3 class="modal__title" id="specialtyModalTitle">إضافة تخصص جديد</h3>
+                <button class="modal__close" onclick="closeSpecialtyModal()">✕</button>
+            </div>
+            <div class="modal__body">
+                <form id="specialtyForm" class="modal-form">
+                    <input type="hidden" id="specialtyId">
+
+                    <div class="form-group">
+                        <label>اسم التخصص *</label>
+                        <input type="text" id="specialtyNameAr" required placeholder="العلوم الطبية">
+                    </div>
+
+                    <div class="form-row" style="margin-top: 1rem;">
+                        <div class="form-group">
+                            <label>المعرف (Slug) *</label>
+                            <input type="text" id="specialtySlug" required placeholder="medical">
+                        </div>
+                        <div class="form-group">
+                            <label>الأيقونة (إيموجي)</label>
+                            <input type="text" id="specialtyIcon" placeholder="🏥">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label>الوصف</label>
+                        <textarea id="specialtyDescriptionAr" placeholder="وصف مختصر"></textarea>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label>مدة الدراسة</label>
+                        <input type="text" id="specialtyDurationAr" placeholder="5 سنوات">
+                    </div>
+
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label>الترتيب</label>
+                        <input type="number" id="specialtyOrder" value="0" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label>صورة التخصص</label>
+                        <div class="upload-area" id="specialtyUploadArea">
+                            <div class="upload-area__icon">📷</div>
+                            <p class="upload-area__text">اسحب الصورة هنا أو انقر للاختيار</p>
+                            <input type="file" id="specialtyImageInput" accept="image/*">
+                            <img id="specialtyImagePreview" class="upload-preview" style="display: none;">
+                        </div>
+                        <input type="hidden" id="specialtyImageUrl">
+                        <small style="color: #6b7280;">أو أدخل رابط الصورة مباشرة:</small>
+                        <input type="url" id="specialtyImageUrlInput" placeholder="https://example.com/image.jpg" style="margin-top: 0.5rem;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>رابط الفيديو التعريفي</label>
+                        <div class="video-input-group">
+                            <div class="form-group">
+                                <input type="url" id="specialtyVideoUrl" placeholder="YouTube, Vimeo, أو Google Drive">
+                            </div>
+                            <button type="button" class="btn btn-secondary" onclick="parseVideoUrl()">تحقق</button>
+                        </div>
+                        <div id="videoPreview" class="video-preview" style="display: none;"></div>
+                        <input type="hidden" id="specialtyVideoType" value="youtube">
+                    </div>
+
+                    <div class="form-group">
+                        <label>التخصصات الفرعية</label>
+                        <div class="items-list" id="specialtyItemsListAr"></div>
+                        <div class="add-item-group">
+                            <input type="text" id="newItemInputAr" placeholder="أضف تخصص فرعي">
+                            <button type="button" class="btn btn-secondary" onclick="addItemAr()">إضافة</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label>
+                            <input type="checkbox" id="specialtyActive" checked>
+                            مفعّل
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn-secondary" onclick="closeSpecialtyModal()">إلغاء</button>
+                <button class="btn btn-primary" onclick="saveSpecialty()">حفظ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Modal -->
+    <div class="modal" id="galleryModal" style="display:none;">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 id="galleryModalTitle">إضافة صورة</h3>
+                <button class="modal-close" onclick="closeGalleryModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>الصورة *</label>
+                    <div class="upload-area" id="galleryUploadArea" onclick="document.getElementById('galleryImageInput').click();">
+                        <input type="file" id="galleryImageInput" accept="image/*" style="display:none;" onchange="handleGalleryUpload(this)">
+                        <div id="galleryPreview" style="text-align: center;">
+                            <p>اضغط لرفع صورة</p>
+                        </div>
+                    </div>
+                    <input type="hidden" id="galleryImageUrl">
+                </div>
+                <div class="form-group">
+                    <label>الألبوم</label>
+                    <input type="text" id="galleryAlbum" class="form-control" placeholder="مثال: استقبال الطلبة" value="عام">
+                </div>
+                <div class="form-group">
+                    <label>التعليق</label>
+                    <input type="text" id="galleryCaptionAr" class="form-control" placeholder="وصف الصورة">
+                </div>
+                <div class="form-group">
+                    <label>ترتيب العرض</label>
+                    <input type="number" id="galleryDisplayOrder" class="form-control" value="0" min="0">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeGalleryModal()">إلغاء</button>
+                <button class="btn btn-primary" onclick="saveGalleryItem()">حفظ</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+    <script>
+        // Require authentication
+        requireAuth();
+
+        let heroSlides = [];
+        let specialties = [];
+        let currentItemsAr = [];
+
+        // ========================================
+        // Tab Navigation
+        // ========================================
+        document.querySelectorAll('.media-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.media-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.media-section').forEach(s => s.classList.remove('active'));
+
+                tab.classList.add('active');
+                document.getElementById(`${tab.dataset.tab}Section`).classList.add('active');
+            });
+        });
+
+        // ========================================
+        // Load Data
+        // ========================================
+        async function loadHeroSlides() {
+            try {
+                const data = await apiGet('/api/media/hero/all');
+                if (data.success) {
+                    heroSlides = data.data;
+                    renderHeroSlides();
+                }
+            } catch (error) {
+                console.error('Error loading hero slides:', error);
+            }
+        }
+
+        async function loadSpecialties() {
+            try {
+                const data = await apiGet('/api/media/specialties/all');
+                if (data.success) {
+                    specialties = data.data;
+                    renderSpecialties();
+                }
+            } catch (error) {
+                console.error('Error loading specialties:', error);
+            }
+        }
+
+        // ========================================
+        // Render Functions
+        // ========================================
+        function renderHeroSlides() {
+            const grid = document.getElementById('heroGrid');
+            const empty = document.getElementById('heroEmpty');
+
+            if (heroSlides.length === 0) {
+                grid.innerHTML = '';
+                grid.appendChild(empty);
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            grid.innerHTML = heroSlides.map(slide => `
+                <div class="media-card">
+                    ${slide.image_url
+                        ? `<img src="${sanitizeUrl(slide.image_url)}" class="media-card__image" alt="">`
+                        : '<div class="media-card__placeholder">🖼️</div>'
+                    }
+                    <div class="media-card__body">
+                        <span class="media-card__status ${slide.is_active ? 'media-card__status--active' : 'media-card__status--inactive'}">
+                            ${slide.is_active ? 'مفعّل' : 'معطّل'}
+                        </span>
+                        <h4 class="media-card__title">
+                            ${escapeHtml(slide.title_ar) || 'بدون عنوان'}
+                        </h4>
+                        <p class="media-card__subtitle">${escapeHtml(slide.subtitle_ar) || ''}</p>
+                        <div class="media-card__actions">
+                            <button class="btn btn-sm btn-secondary" onclick="editHeroSlide(${slide.id})">تعديل</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteHeroSlide(${slide.id})">حذف</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderSpecialties() {
+            const grid = document.getElementById('specialtiesGrid');
+            const empty = document.getElementById('specialtiesEmpty');
+
+            if (specialties.length === 0) {
+                grid.innerHTML = '';
+                grid.appendChild(empty);
+                empty.innerHTML = '<div class="empty-state__icon">📚</div><p>لا توجد تخصصات</p>';
+                return;
+            }
+
+            empty.style.display = 'none';
+            grid.innerHTML = specialties.map(spec => `
+                <div class="media-card">
+                    ${spec.image_url
+                        ? `<img src="${sanitizeUrl(spec.image_url)}" class="media-card__image" alt="">`
+                        : `<div class="media-card__placeholder">${escapeHtml(spec.icon || '📚')}</div>`
+                    }
+                    <div class="media-card__body">
+                        <span class="media-card__status ${spec.is_active ? 'media-card__status--active' : 'media-card__status--inactive'}">
+                            ${spec.is_active ? 'مفعّل' : 'معطّل'}
+                        </span>
+                        <h4 class="media-card__title">
+                            ${escapeHtml(spec.icon || '')} ${escapeHtml(spec.name_ar)}
+                        </h4>
+                        <p class="media-card__subtitle">${escapeHtml(spec.description_ar) || ''}</p>
+                        ${spec.video_url ? '<span style="color: #006233; font-size: 0.875rem;">📹 يحتوي فيديو</span>' : ''}
+                        <div class="media-card__actions" style="margin-top: 0.5rem;">
+                            <button class="btn btn-sm btn-secondary" onclick="editSpecialty(${spec.id})">تعديل</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteSpecialty(${spec.id})">حذف</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ========================================
+        // Hero Slide Modal
+        // ========================================
+        function openHeroModal(id = null) {
+            document.getElementById('heroModalTitle').textContent = id ? 'تعديل الشريحة' : 'إضافة شريحة جديدة';
+            document.getElementById('heroForm').reset();
+            document.getElementById('heroId').value = '';
+            document.getElementById('heroImageUrl').value = '';
+            document.getElementById('heroImagePreview').style.display = 'none';
+
+            if (id) {
+                const slide = heroSlides.find(s => s.id === id);
+                if (slide) {
+                    document.getElementById('heroId').value = slide.id;
+                    document.getElementById('heroTitleAr').value = slide.title_ar || '';
+                    document.getElementById('heroSubtitleAr').value = slide.subtitle_ar || '';
+                    document.getElementById('heroImageUrl').value = slide.image_url || '';
+                    document.getElementById('heroImageUrlInput').value = slide.image_url || '';
+                    document.getElementById('heroLinkUrl').value = slide.link_url || '';
+                    document.getElementById('heroButtonTextAr').value = slide.button_text_ar || '';
+                    document.getElementById('heroOrder').value = slide.display_order || 0;
+                    document.getElementById('heroActive').checked = slide.is_active;
+
+                    if (slide.image_url) {
+                        document.getElementById('heroImagePreview').src = slide.image_url;
+                        document.getElementById('heroImagePreview').style.display = 'block';
+                    }
+                }
+            }
+
+            document.getElementById('heroModal').classList.add('open');
+        }
+
+        function closeHeroModal() {
+            document.getElementById('heroModal').classList.remove('open');
+        }
+
+        function editHeroSlide(id) {
+            openHeroModal(id);
+        }
+
+        async function saveHeroSlide() {
+            const id = document.getElementById('heroId').value;
+            const imageUrl = document.getElementById('heroImageUrl').value || document.getElementById('heroImageUrlInput').value;
+
+            if (!imageUrl) {
+                showToast('يرجى رفع صورة أو إدخال رابط الصورة', 'error');
+                return;
+            }
+
+            const data = {
+                title_ar: document.getElementById('heroTitleAr').value,
+                subtitle_ar: document.getElementById('heroSubtitleAr').value,
+                image_url: imageUrl,
+                link_url: document.getElementById('heroLinkUrl').value,
+                button_text_ar: document.getElementById('heroButtonTextAr').value,
+                display_order: parseInt(document.getElementById('heroOrder').value) || 0,
+                is_active: document.getElementById('heroActive').checked
+            };
+
+            try {
+                if (id) {
+                    await apiPut(`/api/media/hero/${id}`, data);
+                    showToast('تم تحديث الشريحة بنجاح', 'success');
+                } else {
+                    await apiPost('/api/media/hero', data);
+                    showToast('تمت إضافة الشريحة بنجاح', 'success');
+                }
+                closeHeroModal();
+                loadHeroSlides();
+            } catch (error) {
+                showToast('حدث خطأ أثناء الحفظ', 'error');
+            }
+        }
+
+        async function deleteHeroSlide(id) {
+            if (!confirmAction('هل أنت متأكد من حذف هذه الشريحة؟')) return;
+
+            try {
+                await apiDelete(`/api/media/hero/${id}`);
+                showToast('تم حذف الشريحة بنجاح', 'success');
+                loadHeroSlides();
+            } catch (error) {
+                showToast('حدث خطأ أثناء الحذف', 'error');
+            }
+        }
+
+        // ========================================
+        // Specialty Modal
+        // ========================================
+        function openSpecialtyModal(id = null) {
+            document.getElementById('specialtyModalTitle').textContent = id ? 'تعديل التخصص' : 'إضافة تخصص جديد';
+            document.getElementById('specialtyForm').reset();
+            document.getElementById('specialtyId').value = '';
+            document.getElementById('specialtyImageUrl').value = '';
+            document.getElementById('specialtyImagePreview').style.display = 'none';
+            document.getElementById('videoPreview').style.display = 'none';
+            currentItemsAr = [];
+            renderItemsAr();
+
+            if (id) {
+                const spec = specialties.find(s => s.id === id);
+                if (spec) {
+                    document.getElementById('specialtyId').value = spec.id;
+                    document.getElementById('specialtyNameAr').value = spec.name_ar || '';
+                    document.getElementById('specialtySlug').value = spec.slug || '';
+                    document.getElementById('specialtyIcon').value = spec.icon || '';
+                    document.getElementById('specialtyDescriptionAr').value = spec.description_ar || '';
+                    document.getElementById('specialtyDurationAr').value = spec.duration_ar || '';
+                    document.getElementById('specialtyImageUrl').value = spec.image_url || '';
+                    document.getElementById('specialtyImageUrlInput').value = spec.image_url || '';
+                    document.getElementById('specialtyVideoUrl').value = spec.video_url || '';
+                    document.getElementById('specialtyVideoType').value = spec.video_type || 'youtube';
+                    document.getElementById('specialtyOrder').value = spec.display_order || 0;
+                    document.getElementById('specialtyActive').checked = spec.is_active;
+
+                    if (spec.image_url) {
+                        document.getElementById('specialtyImagePreview').src = spec.image_url;
+                        document.getElementById('specialtyImagePreview').style.display = 'block';
+                    }
+
+                    currentItemsAr = Array.isArray(spec.items_ar) ? spec.items_ar : [];
+                    renderItemsAr();
+
+                    if (spec.video_url) {
+                        parseVideoUrl();
+                    }
+                }
+            }
+
+            document.getElementById('specialtyModal').classList.add('open');
+        }
+
+        function closeSpecialtyModal() {
+            document.getElementById('specialtyModal').classList.remove('open');
+        }
+
+        function editSpecialty(id) {
+            openSpecialtyModal(id);
+        }
+
+        async function saveSpecialty() {
+            const id = document.getElementById('specialtyId').value;
+            const nameAr = document.getElementById('specialtyNameAr').value;
+            const slug = document.getElementById('specialtySlug').value;
+
+            if (!nameAr || !slug) {
+                showToast('يرجى إدخال اسم التخصص والمعرف', 'error');
+                return;
+            }
+
+            const imageUrl = document.getElementById('specialtyImageUrl').value || document.getElementById('specialtyImageUrlInput').value;
+
+            const data = {
+                name_ar: nameAr,
+                slug: slug,
+                icon: document.getElementById('specialtyIcon').value,
+                description_ar: document.getElementById('specialtyDescriptionAr').value,
+                duration_ar: document.getElementById('specialtyDurationAr').value,
+                image_url: imageUrl,
+                video_url: document.getElementById('specialtyVideoUrl').value,
+                video_type: document.getElementById('specialtyVideoType').value,
+                items_ar: currentItemsAr,
+                display_order: parseInt(document.getElementById('specialtyOrder').value) || 0,
+                is_active: document.getElementById('specialtyActive').checked
+            };
+
+            try {
+                if (id) {
+                    await apiPut(`/api/media/specialties/${id}`, data);
+                    showToast('تم تحديث التخصص بنجاح', 'success');
+                } else {
+                    await apiPost('/api/media/specialties', data);
+                    showToast('تمت إضافة التخصص بنجاح', 'success');
+                }
+                closeSpecialtyModal();
+                loadSpecialties();
+            } catch (error) {
+                showToast('حدث خطأ أثناء الحفظ', 'error');
+            }
+        }
+
+        async function deleteSpecialty(id) {
+            if (!confirmAction('هل أنت متأكد من حذف هذا التخصص؟')) return;
+
+            try {
+                await apiDelete(`/api/media/specialties/${id}`);
+                showToast('تم حذف التخصص بنجاح', 'success');
+                loadSpecialties();
+            } catch (error) {
+                showToast('حدث خطأ أثناء الحذف', 'error');
+            }
+        }
+
+        // ========================================
+        // Items Management
+        // ========================================
+        function renderItemsAr() {
+            const list = document.getElementById('specialtyItemsListAr');
+            list.innerHTML = currentItemsAr.map((item, index) => `
+                <span class="items-list__item">
+                    ${escapeHtml(item)}
+                    <button class="items-list__remove" onclick="removeItemAr(${index})">✕</button>
+                </span>
+            `).join('');
+        }
+
+        function addItemAr() {
+            const input = document.getElementById('newItemInputAr');
+            const value = input.value.trim();
+            if (value) {
+                currentItemsAr.push(value);
+                renderItemsAr();
+                input.value = '';
+            }
+        }
+
+        function removeItemAr(index) {
+            currentItemsAr.splice(index, 1);
+            renderItemsAr();
+        }
+
+        // Enter key to add items
+        document.getElementById('newItemInputAr').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addItemAr();
+            }
+        });
+
+        // ========================================
+        // Video URL Parser
+        // ========================================
+        async function parseVideoUrl() {
+            const url = document.getElementById('specialtyVideoUrl').value;
+            const preview = document.getElementById('videoPreview');
+
+            if (!url) {
+                preview.style.display = 'none';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/media/parse-video', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('specialtyVideoType').value = data.data.type;
+
+                    const typeLabels = {
+                        youtube: 'YouTube',
+                        vimeo: 'Vimeo',
+                        drive: 'Google Drive'
+                    };
+
+                    preview.innerHTML = `
+                        <span class="video-preview__badge video-preview__badge--${data.data.type}">${typeLabels[data.data.type]}</span>
+                        <p>✓ رابط صالح</p>
+                    `;
+                    preview.style.display = 'block';
+                } else {
+                    preview.innerHTML = '<p style="color: #ef4444;">⚠️ رابط غير مدعوم</p>';
+                    preview.style.display = 'block';
+                }
+            } catch (error) {
+                preview.innerHTML = '<p style="color: #ef4444;">⚠️ خطأ في التحقق</p>';
+                preview.style.display = 'block';
+            }
+        }
+
+        // ========================================
+        // File Upload
+        // ========================================
+        function setupUpload(uploadAreaId, inputId, previewId, hiddenInputId, type) {
+            const area = document.getElementById(uploadAreaId);
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            const hiddenInput = document.getElementById(hiddenInputId);
+
+            if (!area || !input) return;
+
+            area.addEventListener('click', () => input.click());
+
+            area.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                area.classList.add('dragover');
+            });
+
+            area.addEventListener('dragleave', () => {
+                area.classList.remove('dragover');
+            });
+
+            area.addEventListener('drop', (e) => {
+                e.preventDefault();
+                area.classList.remove('dragover');
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    uploadFile(file, preview, hiddenInput, type);
+                }
+            });
+
+            input.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    uploadFile(file, preview, hiddenInput, type);
+                }
+            });
+        }
+
+        async function uploadFile(file, preview, hiddenInput, type) {
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const response = await fetch(`/api/media/upload/${type}`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    preview.src = data.data.url;
+                    preview.style.display = 'block';
+                    hiddenInput.value = data.data.url;
+                    showToast('تم رفع الصورة بنجاح', 'success');
+                } else {
+                    const errMsg = data.error ? (data.message + ': ' + data.error) : (data.message || 'خطأ في رفع الصورة');
+                    console.error('Upload failed:', data);
+                    showToast(errMsg, 'error');
+                }
+            } catch (error) {
+                console.error('Upload exception:', error);
+                showToast('خطأ في رفع الصورة: ' + error.message, 'error');
+            }
+        }
+
+        // Setup upload areas
+        setupUpload('heroUploadArea', 'heroImageInput', 'heroImagePreview', 'heroImageUrl', 'hero');
+        setupUpload('specialtyUploadArea', 'specialtyImageInput', 'specialtyImagePreview', 'specialtyImageUrl', 'specialties');
+
+        // ========================================
+        // Manual URL Input
+        // ========================================
+        document.getElementById('heroImageUrlInput').addEventListener('input', (e) => {
+            const url = e.target.value;
+            const preview = document.getElementById('heroImagePreview');
+            if (url) {
+                preview.src = url;
+                preview.style.display = 'block';
+                document.getElementById('heroImageUrl').value = url;
+            } else {
+                preview.style.display = 'none';
+            }
+        });
+
+        document.getElementById('specialtyImageUrlInput').addEventListener('input', (e) => {
+            const url = e.target.value;
+            const preview = document.getElementById('specialtyImagePreview');
+            if (url) {
+                preview.src = url;
+                preview.style.display = 'block';
+                document.getElementById('specialtyImageUrl').value = url;
+            } else {
+                preview.style.display = 'none';
+            }
+        });
+
+        // ========================================
+        // Gallery
+        // ========================================
+        let editingGalleryId = null;
+
+        async function loadGallery() {
+            const container = document.getElementById('galleryList');
+            if (!container) return;
+
+            try {
+                const data = await apiGet('/api/gallery/all');
+                if (!data.success || !data.data.length) {
+                    container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #888; padding: 2rem;">لا توجد صور في المعرض</p>';
+                    return;
+                }
+
+                container.innerHTML = data.data.map(item => `
+                    <div style="position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1; background: #f3f4f6;">
+                        <img src="${item.image_url}" alt="${escapeHtml(item.caption_ar || '')}" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 0.5rem; background: rgba(0,0,0,0.6); color: white; font-size: 0.8rem; text-align: center;">
+                            ${item.album_ar ? `<span style="background: rgba(255,255,255,0.2); padding: 1px 6px; border-radius: 4px; font-size: 0.7rem; margin-left: 4px;">${escapeHtml(item.album_ar)}</span>` : ''}
+                            ${item.caption_ar ? escapeHtml(item.caption_ar) : ''}
+                        </div>
+                        <div style="position: absolute; top: 0.5rem; left: 0.5rem; display: flex; gap: 0.25rem;">
+                            <button onclick="editGalleryItem(${item.id}, '${item.image_url.replace(/'/g, "\\'")}', '${(item.caption_ar || '').replace(/'/g, "\\'")}', ${item.display_order}, '${(item.album_ar || 'عام').replace(/'/g, "\\'")}')"
+                                style="background: rgba(255,255,255,0.9); border: none; border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 0.75rem;">✏️</button>
+                            <button onclick="deleteGalleryItem(${item.id})"
+                                style="background: rgba(255,255,255,0.9); border: none; border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 0.75rem;">🗑️</button>
+                        </div>
+                        ${!item.is_active ? '<div style="position: absolute; top: 0.5rem; right: 0.5rem; background: #ef4444; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem;">مخفي</div>' : ''}
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.error('Error loading gallery:', e);
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #ef4444;">خطأ في تحميل المعرض</p>';
+            }
+        }
+
+        function showGalleryModal(id) {
+            editingGalleryId = id || null;
+            document.getElementById('galleryModalTitle').textContent = id ? 'تعديل صورة' : 'إضافة صورة';
+            document.getElementById('galleryImageUrl').value = '';
+            document.getElementById('galleryAlbum').value = 'عام';
+            document.getElementById('galleryCaptionAr').value = '';
+            document.getElementById('galleryDisplayOrder').value = '0';
+            document.getElementById('galleryPreview').innerHTML = '<p>اضغط لرفع صورة</p>';
+            document.getElementById('galleryModal').style.display = 'flex';
+        }
+
+        function closeGalleryModal() {
+            document.getElementById('galleryModal').style.display = 'none';
+            editingGalleryId = null;
+        }
+
+        function editGalleryItem(id, imageUrl, caption, order, album) {
+            editingGalleryId = id;
+            document.getElementById('galleryModalTitle').textContent = 'تعديل صورة';
+            document.getElementById('galleryImageUrl').value = imageUrl;
+            document.getElementById('galleryAlbum').value = album;
+            document.getElementById('galleryCaptionAr').value = caption;
+            document.getElementById('galleryDisplayOrder').value = order;
+            document.getElementById('galleryPreview').innerHTML = `<img src="${imageUrl}" style="max-height: 200px; border-radius: 8px;">`;
+            document.getElementById('galleryModal').style.display = 'flex';
+        }
+
+        async function handleGalleryUpload(input) {
+            if (!input.files || !input.files[0]) return;
+
+            const file = input.files[0];
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const res = await fetch('/api/media/upload/gallery', {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    document.getElementById('galleryImageUrl').value = data.data.url;
+                    document.getElementById('galleryPreview').innerHTML = `<img src="${data.data.url}" style="max-height: 200px; border-radius: 8px;">`;
+                    showToast('تم رفع الصورة', 'success');
+                } else {
+                    showToast(data.message || 'فشل رفع الصورة', 'error');
+                }
+            } catch (e) {
+                showToast('خطأ في رفع الصورة', 'error');
+            }
+        }
+
+        async function saveGalleryItem() {
+            const image_url = document.getElementById('galleryImageUrl').value;
+            const album_ar = document.getElementById('galleryAlbum').value.trim() || 'عام';
+            const caption_ar = document.getElementById('galleryCaptionAr').value;
+            const display_order = parseInt(document.getElementById('galleryDisplayOrder').value) || 0;
+
+            if (!image_url) {
+                showToast('يجب رفع صورة', 'error');
+                return;
+            }
+
+            try {
+                let data;
+                if (editingGalleryId) {
+                    data = await apiPut(`/api/gallery/${editingGalleryId}`, { image_url, caption_ar, display_order, album_ar });
+                } else {
+                    data = await apiPost('/api/gallery', { image_url, caption_ar, display_order, album_ar });
+                }
+
+                if (data.success) {
+                    showToast(editingGalleryId ? 'تم تحديث الصورة' : 'تمت إضافة الصورة', 'success');
+                    closeGalleryModal();
+                    loadGallery();
+                } else {
+                    showToast(data.message || 'حدث خطأ', 'error');
+                }
+            } catch (e) {
+                showToast('حدث خطأ', 'error');
+            }
+        }
+
+        async function deleteGalleryItem(id) {
+            if (!confirmAction('هل تريد حذف هذه الصورة؟')) return;
+
+            try {
+                const data = await apiDelete(`/api/gallery/${id}`);
+                if (data.success) {
+                    showToast('تم حذف الصورة', 'success');
+                    loadGallery();
+                } else {
+                    showToast(data.message || 'حدث خطأ', 'error');
+                }
+            } catch (e) {
+                showToast('حدث خطأ في الحذف', 'error');
+            }
+        }
+
+        // ========================================
+        // Initialize
+        // ========================================
+        loadHeroSlides();
+        loadSpecialties();
+        loadGallery();
+    </script>
+</body>
+</html>

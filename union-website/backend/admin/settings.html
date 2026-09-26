@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الإعدادات - لوحة التحكم</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>لوحة التحكم</h2>
+            <p>اتحاد الطلبة</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span>الرئيسية</span>
+            </a>
+            <a href="news.html" class="nav-item">
+                <span class="nav-icon">📰</span>
+                <span>الأخبار</span>
+            </a>
+            <a href="messages.html" class="nav-item">
+                <span class="nav-icon">✉️</span>
+                <span>الرسائل</span>
+            </a>
+            <a href="pages.html" class="nav-item">
+                <span class="nav-icon">📄</span>
+                <span>محتوى الصفحات</span>
+            </a>
+            <a href="media.html" class="nav-item">
+                <span class="nav-icon">🖼️</span>
+                <span>الوسائط</span>
+            </a>
+            <a href="universities.html" class="nav-item">
+                <span class="nav-icon">🏛️</span>
+                <span>الجامعات</span>
+            </a>
+            <a href="settings.html" class="nav-item active">
+                <span class="nav-icon">⚙️</span>
+                <span>الإعدادات</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="/" class="nav-item">
+                <span class="nav-icon">🌐</span>
+                <span>الموقع الرئيسي</span>
+            </a>
+            <button onclick="logout()" class="nav-item logout-btn">
+                <span class="nav-icon">🚪</span>
+                <span>تسجيل الخروج</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="content-header">
+            <h2>إعدادات الموقع</h2>
+        </header>
+
+        <div style="max-width: 600px;">
+            <!-- Logo Upload -->
+            <div class="dashboard-section" style="padding: 2rem; margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">شعار الموقع</h3>
+                <div style="cursor: pointer; border: 2px dashed #ccc; border-radius: 12px; padding: 2rem; text-align: center;" id="logoUploadArea" onclick="document.getElementById('logoInput').click();">
+                    <input type="file" id="logoInput" accept="image/*" style="display:none;" onchange="handleLogoUpload(this)">
+                    <div id="logoPreview">
+                        <p>اضغط لرفع الشعار</p>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="saveLogo()" style="margin-top: 1rem; width: 100%;">حفظ الشعار</button>
+            </div>
+
+            <!-- Site Name -->
+            <div class="dashboard-section" style="padding: 2rem; margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">اسم الموقع</h3>
+                <input type="text" id="siteName" class="form-control" placeholder="اسم الموقع" style="width: 100%; padding: 12px 16px; border: 1px solid #e5e7eb; border-radius: 8px; font-family: inherit; font-size: 1rem;">
+                <button class="btn btn-primary" onclick="saveSetting('site_name', document.getElementById('siteName').value)" style="margin-top: 1rem; width: 100%;">حفظ</button>
+            </div>
+
+            <!-- Site Description -->
+            <div class="dashboard-section" style="padding: 2rem; margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">وصف الموقع</h3>
+                <textarea id="siteDescription" class="form-control" rows="3" placeholder="وصف الموقع" style="width: 100%; padding: 12px 16px; border: 1px solid #e5e7eb; border-radius: 8px; font-family: inherit; font-size: 1rem; resize: vertical;"></textarea>
+                <button class="btn btn-primary" onclick="saveSetting('site_description', document.getElementById('siteDescription').value)" style="margin-top: 1rem; width: 100%;">حفظ</button>
+            </div>
+
+            <!-- Footer Text -->
+            <div class="dashboard-section" style="padding: 2rem; margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">نص التذييل</h3>
+                <input type="text" id="footerTextSetting" class="form-control" placeholder="نص التذييل" style="width: 100%; padding: 12px 16px; border: 1px solid #e5e7eb; border-radius: 8px; font-family: inherit; font-size: 1rem;">
+                <button class="btn btn-primary" onclick="saveSetting('footer_text', document.getElementById('footerTextSetting').value)" style="margin-top: 1rem; width: 100%;">حفظ</button>
+            </div>
+
+            <!-- Favicon Upload -->
+            <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">أيقونة الموقع (Favicon)</h3>
+                <div style="cursor: pointer; border: 2px dashed #ccc; border-radius: 12px; padding: 2rem; text-align: center;" onclick="document.getElementById('faviconInput').click();">
+                    <input type="file" id="faviconInput" accept="image/*" style="display:none;" onchange="handleFaviconUpload(this)">
+                    <div id="faviconPreview"><p>اضغط لرفع الأيقونة</p></div>
+                </div>
+                <button class="btn btn-primary" onclick="saveFavicon()" style="margin-top: 1rem; width: 100%;">حفظ</button>
+            </div>
+
+            <h2 style="margin: 2rem 0 1rem; font-size: 1.3rem;">معلومات التواصل</h2>
+
+            <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">البريد الإلكتروني</h3>
+                <input type="email" id="contactEmail" class="form-control" placeholder="contact@example.com" dir="ltr" style="text-align: left;">
+                <button class="btn btn-primary" onclick="saveSetting('contact_email', document.getElementById('contactEmail').value)" style="margin-top: 1rem; width: 100%;">حفظ</button>
+            </div>
+
+            <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">رقم الهاتف</h3>
+                <input type="text" id="contactPhone" class="form-control" placeholder="+213 XX XX XX XX" dir="ltr" style="text-align: left;">
+                <button class="btn btn-primary" onclick="saveSetting('contact_phone', document.getElementById('contactPhone').value)" style="margin-top: 1rem; width: 100%;">حفظ</button>
+            </div>
+
+            <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">العنوان</h3>
+                <input type="text" id="contactAddress" class="form-control" placeholder="العنوان">
+                <button class="btn btn-primary" onclick="saveSetting('contact_address', document.getElementById('contactAddress').value)" style="margin-top: 1rem; width: 100%;">حفظ</button>
+            </div>
+
+            <h2 style="margin: 2rem 0 1rem; font-size: 1.3rem;">روابط التواصل الاجتماعي</h2>
+
+            <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">فيسبوك</h3>
+                <input type="url" id="socialFacebook" class="form-control" placeholder="https://facebook.com/..." dir="ltr" style="text-align: left;">
+                <button class="btn btn-primary" onclick="saveSetting('social_facebook', document.getElementById('socialFacebook').value)" style="margin-top: 1rem; width: 100%;">حفظ</button>
+            </div>
+
+            <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">انستغرام</h3>
+                <input type="url" id="socialInstagram" class="form-control" placeholder="https://instagram.com/..." dir="ltr" style="text-align: left;">
+                <button class="btn btn-primary" onclick="saveSetting('social_instagram', document.getElementById('socialInstagram').value)" style="margin-top: 1rem; width: 100%;">حفظ</button>
+            </div>
+
+            <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">تليغرام</h3>
+                <input type="url" id="socialTelegram" class="form-control" placeholder="https://t.me/..." dir="ltr" style="text-align: left;">
+                <button class="btn btn-primary" onclick="saveSetting('social_telegram', document.getElementById('socialTelegram').value)" style="margin-top: 1rem; width: 100%;">حفظ</button>
+            </div>
+
+            <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">واتساب</h3>
+                <input type="url" id="socialWhatsapp" class="form-control" placeholder="https://wa.me/..." dir="ltr" style="text-align: left;">
+                <button class="btn btn-primary" onclick="saveSetting('social_whatsapp', document.getElementById('socialWhatsapp').value)" style="margin-top: 1rem; width: 100%;">حفظ</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/admin.js"></script>
+    <script>
+        let currentLogoUrl = '';
+        let currentFaviconUrl = '';
+
+        async function loadSettings() {
+            try {
+                const data = await apiGet('/api/media/settings');
+                if (!data.success) return;
+
+                const s = data.data;
+
+                if (s.site_logo && s.site_logo.value_ar) {
+                    currentLogoUrl = s.site_logo.value_ar;
+                    document.getElementById('logoPreview').innerHTML = `<img src="${currentLogoUrl}" style="max-height: 120px; border-radius: 8px;">`;
+                }
+                if (s.site_name) document.getElementById('siteName').value = s.site_name.value_ar || '';
+                if (s.site_description) document.getElementById('siteDescription').value = s.site_description.value_ar || '';
+                if (s.footer_text) document.getElementById('footerTextSetting').value = s.footer_text.value_ar || '';
+                if (s.site_favicon && s.site_favicon.value_ar) {
+                    currentFaviconUrl = s.site_favicon.value_ar;
+                    document.getElementById('faviconPreview').innerHTML = `<img src="${currentFaviconUrl}" style="max-height: 64px;">`;
+                }
+                if (s.contact_email) document.getElementById('contactEmail').value = s.contact_email.value_ar || '';
+                if (s.contact_phone) document.getElementById('contactPhone').value = s.contact_phone.value_ar || '';
+                if (s.contact_address) document.getElementById('contactAddress').value = s.contact_address.value_ar || '';
+                if (s.social_facebook) document.getElementById('socialFacebook').value = s.social_facebook.value_ar || '';
+                if (s.social_instagram) document.getElementById('socialInstagram').value = s.social_instagram.value_ar || '';
+                if (s.social_telegram) document.getElementById('socialTelegram').value = s.social_telegram.value_ar || '';
+                if (s.social_whatsapp) document.getElementById('socialWhatsapp').value = s.social_whatsapp.value_ar || '';
+            } catch (e) {
+                console.error('Error loading settings:', e);
+            }
+        }
+
+        async function handleLogoUpload(input) {
+            if (!input.files || !input.files[0]) return;
+            const formData = new FormData();
+            formData.append('image', input.files[0]);
+
+            try {
+                const res = await fetch('/api/media/upload/logo', {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.success) {
+                    currentLogoUrl = data.data.url;
+                    document.getElementById('logoPreview').innerHTML = `<img src="${currentLogoUrl}" style="max-height: 120px; border-radius: 8px;">`;
+                    showToast('تم رفع الشعار', 'success');
+                } else {
+                    showToast('فشل رفع الشعار', 'error');
+                }
+            } catch (e) {
+                showToast('خطأ في رفع الشعار', 'error');
+            }
+        }
+
+        async function saveLogo() {
+            if (!currentLogoUrl) {
+                showToast('يجب رفع شعار أولاً', 'error');
+                return;
+            }
+            await saveSetting('site_logo', currentLogoUrl);
+        }
+
+        async function handleFaviconUpload(input) {
+            if (!input.files || !input.files[0]) return;
+            const formData = new FormData();
+            formData.append('image', input.files[0]);
+            try {
+                const res = await fetch('/api/media/upload/favicon', { method: 'POST', credentials: 'include', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    currentFaviconUrl = data.data.url;
+                    document.getElementById('faviconPreview').innerHTML = `<img src="${currentFaviconUrl}" style="max-height: 64px;">`;
+                    showToast('تم رفع الأيقونة', 'success');
+                } else { showToast('فشل الرفع', 'error'); }
+            } catch (e) { showToast('خطأ', 'error'); }
+        }
+
+        async function saveFavicon() {
+            if (!currentFaviconUrl) { showToast('يجب رفع أيقونة أولاً', 'error'); return; }
+            await saveSetting('site_favicon', currentFaviconUrl);
+        }
+
+        async function saveSetting(key, value) {
+            try {
+                const data = await apiPut(`/api/media/settings/${key}`, { value_ar: value });
+                if (data.success) {
+                    showToast('تم حفظ الإعداد بنجاح', 'success');
+                } else {
+                    showToast('فشل حفظ الإعداد', 'error');
+                }
+            } catch (e) {
+                showToast('حدث خطأ', 'error');
+            }
+        }
+
+        // Initialize
+        requireAuth();
+        loadSettings();
+    </script>
+</body>
+</html>

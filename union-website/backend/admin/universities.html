@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الجامعات - لوحة التحكم</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>لوحة التحكم</h2>
+            <p>اتحاد الطلبة</p>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item"><span class="nav-icon">📊</span><span>الرئيسية</span></a>
+            <a href="news.html" class="nav-item"><span class="nav-icon">📰</span><span>الأخبار</span></a>
+            <a href="messages.html" class="nav-item"><span class="nav-icon">✉️</span><span>الرسائل</span></a>
+            <a href="pages.html" class="nav-item"><span class="nav-icon">📄</span><span>محتوى الصفحات</span></a>
+            <a href="media.html" class="nav-item"><span class="nav-icon">🖼️</span><span>الوسائط</span></a>
+            <a href="universities.html" class="nav-item active"><span class="nav-icon">🏛️</span><span>الجامعات</span></a>
+            <a href="settings.html" class="nav-item"><span class="nav-icon">⚙️</span><span>الإعدادات</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/" class="nav-item"><span class="nav-icon">🌐</span><span>الموقع الرئيسي</span></a>
+            <button onclick="logout()" class="nav-item logout-btn"><span class="nav-icon">🚪</span><span>تسجيل الخروج</span></button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="content-header">
+            <div class="header-title">
+                <h1>إدارة الجامعات</h1>
+                <p>إضافة وتعديل وحذف الجامعات الجزائرية</p>
+            </div>
+            <button onclick="showUniModal()" class="btn btn-primary">
+                <span>➕</span> إضافة جامعة
+            </button>
+        </header>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>الشعار</th>
+                        <th>اسم الجامعة</th>
+                        <th>الولاية</th>
+                        <th>الموقع الرسمي</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="uniTableBody">
+                    <tr><td colspan="5" class="loading">جاري التحميل...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- University Modal -->
+    <div id="uniModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 550px;">
+            <div class="modal-header">
+                <h2 id="modalTitle">إضافة جامعة</h2>
+                <button onclick="closeUniModal()" class="close-btn">&times;</button>
+            </div>
+            <form id="uniForm">
+                <input type="hidden" id="uniId">
+
+                <div class="form-group">
+                    <label>اسم الجامعة *</label>
+                    <input type="text" id="uniName" required placeholder="مثال: جامعة الجزائر 1 بن يوسف بن خدة">
+                </div>
+
+                <div class="form-group">
+                    <label>الولاية *</label>
+                    <input type="text" id="uniWilaya" required placeholder="مثال: الجزائر">
+                </div>
+
+                <div class="form-group">
+                    <label>رابط الموقع الرسمي</label>
+                    <input type="text" id="uniWebsite" placeholder="https://www.univ-alger.dz">
+                </div>
+
+                <div class="form-group">
+                    <label>شعار الجامعة</label>
+                    <div class="upload-area" id="logoUploadArea" style="border: 2px dashed #d1d5db; border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; background: #f9fafb;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏛️</div>
+                        <p style="color: #6b7280; margin: 0;">اسحب الشعار هنا أو انقر للاختيار</p>
+                        <input type="file" id="logoFile" accept="image/*" style="display: none;">
+                        <img id="logoPreview" style="max-width: 120px; max-height: 120px; border-radius: 8px; margin-top: 1rem; display: none;">
+                    </div>
+                    <small style="color: #6b7280;">أو أدخل رابط الشعار مباشرة:</small>
+                    <input type="text" id="uniLogo" placeholder="https://example.com/logo.png" style="margin-top: 0.5rem;">
+                </div>
+
+                <div class="form-group">
+                    <label>ترتيب العرض</label>
+                    <input type="number" id="uniOrder" value="0" min="0">
+                </div>
+
+                <div id="uniFormError" class="error-message" style="display: none;"></div>
+
+                <div class="modal-actions">
+                    <button type="button" onclick="closeUniModal()" class="btn btn-secondary">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">حفظ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal" style="display: none;">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2>تأكيد الحذف</h2>
+                <button onclick="closeDeleteModal()" class="close-btn">&times;</button>
+            </div>
+            <p>هل أنت متأكد من حذف هذه الجامعة؟</p>
+            <p class="warning-text">لا يمكن التراجع عن هذا الإجراء!</p>
+            <div class="modal-actions">
+                <button onclick="closeDeleteModal()" class="btn btn-secondary">إلغاء</button>
+                <button onclick="confirmDelete()" class="btn btn-danger">حذف</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+    <script>
+        requireAuth();
+        let uniToDelete = null;
+
+        loadUniversities();
+
+        async function loadUniversities() {
+            try {
+                const response = await fetch('/api/universities/all', { credentials: 'include' });
+                const data = await response.json();
+                const tbody = document.getElementById('uniTableBody');
+
+                if (data.success && data.data.length > 0) {
+                    tbody.innerHTML = data.data.map(uni => `
+                        <tr>
+                            <td>
+                                ${uni.logo_url
+                                    ? `<img src="${escapeHtml(uni.logo_url)}" alt="شعار" style="width: 40px; height: 40px; object-fit: contain; border-radius: 4px;">`
+                                    : '<span style="color: #9ca3af;">—</span>'}
+                            </td>
+                            <td><strong>${escapeHtml(uni.name_ar)}</strong></td>
+                            <td>${escapeHtml(uni.wilaya)}</td>
+                            <td>${uni.website_url ? `<a href="${escapeHtml(uni.website_url)}" target="_blank" rel="noopener" style="color: #0B6B3A;">🔗 زيارة</a>` : '—'}</td>
+                            <td class="actions">
+                                <button onclick="editUni(${uni.id})" class="btn-icon" title="تعديل">✏️</button>
+                                <button onclick="deleteUni(${uni.id})" class="btn-icon danger" title="حذف">🗑️</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty">لا توجد جامعات</td></tr>';
+                }
+            } catch (error) {
+                document.getElementById('uniTableBody').innerHTML = '<tr><td colspan="5" class="error">حدث خطأ في تحميل الجامعات</td></tr>';
+            }
+        }
+
+        function showUniModal(uniData = null) {
+            const modal = document.getElementById('uniModal');
+            const title = document.getElementById('modalTitle');
+            const form = document.getElementById('uniForm');
+            const preview = document.getElementById('logoPreview');
+
+            if (uniData) {
+                title.textContent = 'تعديل الجامعة';
+                document.getElementById('uniId').value = uniData.id;
+                document.getElementById('uniName').value = uniData.name_ar || '';
+                document.getElementById('uniWilaya').value = uniData.wilaya || '';
+                document.getElementById('uniWebsite').value = uniData.website_url || '';
+                document.getElementById('uniLogo').value = uniData.logo_url || '';
+                document.getElementById('uniOrder').value = uniData.display_order || 0;
+                if (uniData.logo_url) { preview.src = uniData.logo_url; preview.style.display = 'block'; } else { preview.style.display = 'none'; }
+            } else {
+                title.textContent = 'إضافة جامعة';
+                form.reset();
+                document.getElementById('uniId').value = '';
+                document.getElementById('uniOrder').value = '0';
+                preview.style.display = 'none';
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeUniModal() {
+            document.getElementById('uniModal').style.display = 'none';
+            document.getElementById('uniFormError').style.display = 'none';
+        }
+
+        async function editUni(id) {
+            try {
+                const response = await fetch('/api/universities/all', { credentials: 'include' });
+                const data = await response.json();
+                if (data.success) {
+                    const uni = data.data.find(u => u.id === id);
+                    if (uni) showUniModal(uni);
+                }
+            } catch (error) { console.error('Error fetching university:', error); }
+        }
+
+        document.getElementById('uniForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('uniId').value;
+            const uniData = {
+                name_ar: document.getElementById('uniName').value,
+                wilaya: document.getElementById('uniWilaya').value,
+                website_url: document.getElementById('uniWebsite').value || '',
+                logo_url: document.getElementById('uniLogo').value || '',
+                display_order: parseInt(document.getElementById('uniOrder').value) || 0
+            };
+
+            const errorDiv = document.getElementById('uniFormError');
+            errorDiv.style.display = 'none';
+
+            try {
+                const url = id ? `/api/universities/${id}` : '/api/universities';
+                const method = id ? 'PUT' : 'POST';
+                const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(uniData) });
+                const data = await response.json();
+                if (data.success) { closeUniModal(); loadUniversities(); } else { errorDiv.textContent = data.message; errorDiv.style.display = 'block'; }
+            } catch (error) { errorDiv.textContent = 'حدث خطأ في حفظ الجامعة'; errorDiv.style.display = 'block'; }
+        });
+
+        function deleteUni(id) { uniToDelete = id; document.getElementById('deleteModal').style.display = 'flex'; }
+        function closeDeleteModal() { document.getElementById('deleteModal').style.display = 'none'; uniToDelete = null; }
+        async function confirmDelete() {
+            if (!uniToDelete) return;
+            try { await fetch(`/api/universities/${uniToDelete}`, { method: 'DELETE', credentials: 'include' }); closeDeleteModal(); loadUniversities(); } catch (e) {}
+        }
+
+        // Logo upload
+        const logoUploadArea = document.getElementById('logoUploadArea');
+        const logoFile = document.getElementById('logoFile');
+        const logoPreview = document.getElementById('logoPreview');
+        const logoInput = document.getElementById('uniLogo');
+
+        logoUploadArea.addEventListener('click', () => logoFile.click());
+        logoUploadArea.addEventListener('dragover', (e) => { e.preventDefault(); logoUploadArea.style.borderColor = '#006233'; });
+        logoUploadArea.addEventListener('dragleave', () => { logoUploadArea.style.borderColor = '#d1d5db'; });
+        logoUploadArea.addEventListener('drop', (e) => { e.preventDefault(); logoUploadArea.style.borderColor = '#d1d5db'; const file = e.dataTransfer.files[0]; if (file && file.type.startsWith('image/')) uploadLogo(file); });
+        logoFile.addEventListener('change', (e) => { if (e.target.files[0]) uploadLogo(e.target.files[0]); });
+        logoInput.addEventListener('input', (e) => { if (e.target.value) { logoPreview.src = e.target.value; logoPreview.style.display = 'block'; } else { logoPreview.style.display = 'none'; } });
+
+        async function uploadLogo(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+            try {
+                const response = await fetch('/api/media/upload/universities', { method: 'POST', credentials: 'include', body: formData });
+                const data = await response.json();
+                if (data.success) { logoPreview.src = data.data.url; logoPreview.style.display = 'block'; logoInput.value = data.data.url; } else { alert(data.message || 'خطأ في رفع الشعار'); }
+            } catch (error) { alert('خطأ في رفع الشعار'); }
+        }
+    </script>
+</body>
+</html>

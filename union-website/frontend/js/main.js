@@ -243,7 +243,7 @@
                     '<div class="hero__slide hero__slide--active" style="background-image: linear-gradient(135deg, #064E2A, #0B6B3A);">' +
                         '<div class="hero__overlay"></div>' +
                         '<div class="hero__content container">' +
-                            '<h1 class="hero__title">اتحاد الطلبة والمتدربين الموريتانيين بالجزائر</h1>' +
+                            '<h1 class="hero__title">اتحاد الطلبة والمتدربين الموريتانيين في بومرداس</h1>' +
                             '<p class="hero__subtitle">معاً نحو التميز والنجاح في مسيرتنا الأكاديمية</p>' +
                         '</div>' +
                     '</div>';

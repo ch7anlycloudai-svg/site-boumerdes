@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة الجامعات - لوحة التحكم</title>
+    <title>إدارة الكليات - لوحة التحكم</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
@@ -22,7 +22,7 @@
             <a href="messages.html" class="nav-item"><span class="nav-icon">✉️</span><span>الرسائل</span></a>
             <a href="pages.html" class="nav-item"><span class="nav-icon">📄</span><span>محتوى الصفحات</span></a>
             <a href="media.html" class="nav-item"><span class="nav-icon">🖼️</span><span>الوسائط</span></a>
-            <a href="universities.html" class="nav-item active"><span class="nav-icon">🏛️</span><span>الجامعات</span></a>
+            <a href="universities.html" class="nav-item active"><span class="nav-icon">🏛️</span><span>الكليات</span></a>
             <a href="settings.html" class="nav-item"><span class="nav-icon">⚙️</span><span>الإعدادات</span></a>
         </nav>
         <div class="sidebar-footer">
@@ -35,11 +35,11 @@
     <main class="main-content">
         <header class="content-header">
             <div class="header-title">
-                <h1>إدارة الجامعات</h1>
-                <p>إضافة وتعديل وحذف الجامعات الجزائرية</p>
+                <h1>إدارة الكليات</h1>
+                <p>إضافة وتعديل وحذف كليات ومعاهد جامعة بومرداس</p>
             </div>
             <button onclick="showUniModal()" class="btn btn-primary">
-                <span>➕</span> إضافة جامعة
+                <span>➕</span> إضافة كلية
             </button>
         </header>
 
@@ -48,7 +48,7 @@
                 <thead>
                     <tr>
                         <th>الشعار</th>
-                        <th>اسم الجامعة</th>
+                        <th>اسم الكلية/المعهد</th>
                         <th>الولاية</th>
                         <th>الموقع الرسمي</th>
                         <th>الإجراءات</th>
@@ -65,14 +65,14 @@
     <div id="uniModal" class="modal" style="display: none;">
         <div class="modal-content" style="max-width: 550px;">
             <div class="modal-header">
-                <h2 id="modalTitle">إضافة جامعة</h2>
+                <h2 id="modalTitle">إضافة كلية</h2>
                 <button onclick="closeUniModal()" class="close-btn">&times;</button>
             </div>
             <form id="uniForm">
                 <input type="hidden" id="uniId">
 
                 <div class="form-group">
-                    <label>اسم الجامعة *</label>
+                    <label>اسم الكلية/المعهد *</label>
                     <input type="text" id="uniName" required placeholder="مثال: جامعة الجزائر 1 بن يوسف بن خدة">
                 </div>
 
@@ -87,7 +87,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>شعار الجامعة</label>
+                    <label>شعار الكلية/المعهد</label>
                     <div class="upload-area" id="logoUploadArea" style="border: 2px dashed #d1d5db; border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; background: #f9fafb;">
                         <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏛️</div>
                         <p style="color: #6b7280; margin: 0;">اسحب الشعار هنا أو انقر للاختيار</p>
@@ -120,7 +120,7 @@
                 <h2>تأكيد الحذف</h2>
                 <button onclick="closeDeleteModal()" class="close-btn">&times;</button>
             </div>
-            <p>هل أنت متأكد من حذف هذه الجامعة؟</p>
+            <p>هل أنت متأكد من حذف هذه الكلية؟</p>
             <p class="warning-text">لا يمكن التراجع عن هذا الإجراء!</p>
             <div class="modal-actions">
                 <button onclick="closeDeleteModal()" class="btn btn-secondary">إلغاء</button>
@@ -160,10 +160,10 @@
                         </tr>
                     `).join('');
                 } else {
-                    tbody.innerHTML = '<tr><td colspan="5" class="empty">لا توجد جامعات</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty">لا توجد كليات</td></tr>';
                 }
             } catch (error) {
-                document.getElementById('uniTableBody').innerHTML = '<tr><td colspan="5" class="error">حدث خطأ في تحميل الجامعات</td></tr>';
+                document.getElementById('uniTableBody').innerHTML = '<tr><td colspan="5" class="error">حدث خطأ في تحميل الكليات</td></tr>';
             }
         }
 
@@ -174,7 +174,7 @@
             const preview = document.getElementById('logoPreview');
 
             if (uniData) {
-                title.textContent = 'تعديل الجامعة';
+                title.textContent = 'تعديل الكلية';
                 document.getElementById('uniId').value = uniData.id;
                 document.getElementById('uniName').value = uniData.name_ar || '';
                 document.getElementById('uniWilaya').value = uniData.wilaya || '';
@@ -183,7 +183,7 @@
                 document.getElementById('uniOrder').value = uniData.display_order || 0;
                 if (uniData.logo_url) { preview.src = uniData.logo_url; preview.style.display = 'block'; } else { preview.style.display = 'none'; }
             } else {
-                title.textContent = 'إضافة جامعة';
+                title.textContent = 'إضافة كلية';
                 form.reset();
                 document.getElementById('uniId').value = '';
                 document.getElementById('uniOrder').value = '0';
@@ -228,7 +228,7 @@
                 const response = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(uniData) });
                 const data = await response.json();
                 if (data.success) { closeUniModal(); loadUniversities(); } else { errorDiv.textContent = data.message; errorDiv.style.display = 'block'; }
-            } catch (error) { errorDiv.textContent = 'حدث خطأ في حفظ الجامعة'; errorDiv.style.display = 'block'; }
+            } catch (error) { errorDiv.textContent = 'حدث خطأ في حفظ الكلية'; errorDiv.style.display = 'block'; }
         });
 
         function deleteUni(id) { uniToDelete = id; document.getElementById('deleteModal').style.display = 'flex'; }
